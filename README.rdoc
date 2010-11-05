@@ -14,7 +14,12 @@ In Rails 3 (or if using Bundler), add the following to your Gemfile:
 
 === Example
 
-
+class ApplicationController < ActionController::Base
+  enforce_route_protocols do |config|
+    config.protocol_parameter = :protocol
+    config.prefer_http = true
+  end
+end
 
 === License
 
