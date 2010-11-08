@@ -1,10 +1,11 @@
-module SslRoutes::Controller
+module SslRoutes::ActsAs
   
   # TO DO:
   # - enable/disable ssl
   # - fix urls (url_for)
   # - fix urls (paperclip)
   # - prefer http or allow both
+  # - secure session (firesheep)
   
   def self.included(base)
     base.extend ClassMethods
@@ -43,4 +44,4 @@ module SslRoutes::Controller
     
 end
 
-ActionController::Base.send :include, SslRoutes::Controller
+ActionController::Base.send :include, SslRoutes::ActsAs
