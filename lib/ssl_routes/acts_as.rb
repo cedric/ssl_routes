@@ -1,47 +1,60 @@
 module SslRoutes::ActsAs
   
-  # TO DO:
-  # - enable/disable ssl
-  # - fix urls (url_for)
-  # - fix urls (paperclip)
-  # - prefer http or allow both
-  # - secure session (firesheep)
-  
   def self.included(base)
     base.extend ClassMethods
+    base.send :include, InstanceMethods
   end
   
   module ClassMethods
-    attr_accessor :protocol_option, :enable_ssl
-    def enforce_route_protocols(&block)
-      # default options
-      self.protocol_option = :protocol
-      self.enable_ssl = true
-      # yield block
+
+    def enforce_protocols(&block)
+      cattr_accessor :parameter, :secure_session, :strict, :ssl
+      self.parameter      = :protocol
+      self.secure_session = false
+      self.strict         = false
+      self.ssl            = true
       yield self if block_given?
-      # apply before filter
-      before_filter :ensure_proper_protocol if self.enable_ssl
+      before_filter :ensure_protocol if self.ssl
     end
+
   end
-    
-  private
-    
-    def ensure_proper_protocol
-      # recognize request route
-      route = ActionController::Routing::Routes.recognize_path(
-        request.path,
-        ActionController::Routing::Routes.extract_request_environment(request)
-      )
-      # determine proper protocol
-      protocol = route.has_key?(:protocol) ? route[:protocol] : 'http'
-      # redirect to proper protocol
-      if protocol && request.protocol != "#{protocol}://"
-        flash.keep
-        redirect_to "#{protocol}://#{request.host_with_port + request.request_uri}"
-        return false
+  
+  module InstanceMethods
+
+    private
+
+      def ensure_protocol
+        # recognize route
+        options = ActionController::Routing::Routes.recognize_path(
+          request.path,
+          ActionController::Routing::Routes.extract_request_environment(request)
+        )
+        # determine protocol
+        current_protocol = request.protocol.split(':').first
+        target_protocol  = extract_protocol(options, self.strict ? 'http' : current_protocol)
+        # fix protocol mismatch
+        if current_protocol != target_protocol
+          flash.keep
+          redirect_to "#{target_protocol}://#{request.host_with_port + request.request_uri}"
+          return false
+        end
       end
-    end
-    
+
+      def extract_protocol(options, default_protocol='http')
+        # preferred protocol
+        protocol = case options[self.parameter]
+          when String then options[self.parameter]
+          when true then 'https'
+          when false then 'http'
+          else default_protocol
+        end
+        # secure session
+        protocol = 'https' if self.secure_session && current_user
+        # return
+        protocol
+      end
+
+  end
 end
 
 ActionController::Base.send :include, SslRoutes::ActsAs
