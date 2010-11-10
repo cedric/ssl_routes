@@ -13,7 +13,7 @@ module SslRoutes::UrlFor
         when Hash
           # determine protocol
           current_protocol = request.protocol.split(':').first
-          target_protocol  = extract_protocol(options, 'http')
+          target_protocol  = extract_protocol(options)
           # fix protocol mismatch
           if current_protocol != target_protocol
             options.merge!({ :protocol => target_protocol, :only_path => false })
