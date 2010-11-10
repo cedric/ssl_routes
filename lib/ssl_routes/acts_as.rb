@@ -1,10 +1,10 @@
 module SslRoutes::ActsAs
-  
+
   def self.included(base)
     base.extend ClassMethods
     base.send :include, InstanceMethods
   end
-  
+
   module ClassMethods
 
     def enforce_protocols(&block)
@@ -18,7 +18,7 @@ module SslRoutes::ActsAs
     end
 
   end
-  
+
   module InstanceMethods
 
     private
@@ -55,6 +55,7 @@ module SslRoutes::ActsAs
       end
 
   end
+
 end
 
 ActionController::Base.send :include, SslRoutes::ActsAs

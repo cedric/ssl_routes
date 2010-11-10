@@ -7,7 +7,7 @@ module SslRoutes::UrlFor
   end
 
   module InstanceMethods
-    
+
     def url_for_with_ssl_support(options)
       case options
         when Hash
@@ -21,9 +21,9 @@ module SslRoutes::UrlFor
       end
       url_for_without_ssl_support(options)
     end
-    
+
     private
-      
+
       def extract_protocol(options, default_protocol='http')
         # preferred protocol
         protocol = case options[self.parameter]
@@ -37,8 +37,9 @@ module SslRoutes::UrlFor
         # return
         protocol
       end
-    
+
   end
+
 end
 
 ActionController::Base.send :include, SslRoutes::UrlFor
