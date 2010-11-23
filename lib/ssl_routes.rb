@@ -4,15 +4,19 @@ module SslRoutes
   # - [DONE] enable/disable ssl
   # - [DONE] enforce protocol in controller
   # - [DONE] route parameter option
-  # - [DONE] fix urls (url_for)
-  # - [DONE] fix urls (paperclip)
   # - [DONE] secure session (firesheep)
+  # - [DONE] fix urls (paperclip)
+  # - [DONE] fix urls (url_for - controller and view)
   # - presentation plugin
+  #
+  # Other:
+  # - cross protocol form submits
+  # - question: canonical urls?
+  # - question: fractured pagerank?
   
   require 'ruby-debug'
   
-  require 'ssl_routes/acts_as'
-  require 'ssl_routes/url_for'
+  require 'ssl_routes/controller'
   require 'ssl_routes/paperclip' if defined?( Paperclip )
   
 end

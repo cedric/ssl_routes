@@ -8,18 +8,35 @@ In Rails 2.3, add the following to your environment.rb:
 
   config.gem 'ssl_routes'
 
-In Rails 3 (or if using Bundler), add the following to your Gemfile:
+In using Bundler, add the following to your Gemfile:
 
   gem 'ssl_routes'
 
 === Example
 
 class ApplicationController < ActionController::Base
-  enforce_route_protocols do |config|
-    config.protocol_parameter = :protocol
-    config.prefer_http = true
+  enforce_protocols do |config|
+    config.parameter = :protocol
+    config.secure_session = true
+    config.enable_ssl = true
   end
 end
+
+=== Configuration
+
+Place enforce_protocols with the configuration block in ApplicationController and define the configuration options.
+
+==== parameter (default: :protocol)
+
+This is the parameter in your routes file that pertains to the protocol. The default is to use the standard :protocol, but you can use a custom one if you want.
+
+==== secure_session (default: false)
+
+This is to defend against session hijacking tools such as Firesheep. When a user is logged in (requires current_user) all traffic will go under SSL.
+
+==== enable_ssl (default: false)
+
+This is to enable or disable SSL. Useful for turning it on or off based on the environment, a session variable or a user setting.
 
 === License
 
