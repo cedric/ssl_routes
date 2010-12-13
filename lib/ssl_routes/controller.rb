@@ -10,9 +10,9 @@ module SslRoutes::Controller
 
     def enforce_protocols(&block)
       cattr_accessor :parameter, :secure_session, :enable_ssl
-      self.parameter        = :protocol
-      self.secure_session   = false
-      self.enable_ssl       = false
+      self.parameter      = :protocol
+      self.secure_session = false
+      self.enable_ssl     = false
       yield self if block_given?
       before_filter :ensure_protocol if self.enable_ssl
     end
@@ -26,7 +26,7 @@ module SslRoutes::Controller
         case options
           when Hash
             current = request.protocol.split(':').first
-            target  = extract_protocol(options, 'http')
+            target  = extract_protocol(options)
             if current != target
               options.merge!({ :protocol => target, :only_path => false })
             end
@@ -43,19 +43,19 @@ module SslRoutes::Controller
           ActionController::Routing::Routes.extract_request_environment(request)
         )
         current = request.protocol.split(':').first
-        target  = extract_protocol(options, current)
-        if current != target
+        target  = extract_protocol(options)
+        if current != target && request.get?
           flash.keep
           redirect_to "#{target}://#{request.host_with_port + request.request_uri}"
           return false
         end
       end
 
-      def extract_protocol(options, default_protocol)
+      def extract_protocol(options)
         protocol = case options[self.parameter]
           when String then options[self.parameter]
           when TrueClass then 'https'
-          else default_protocol
+          else 'http'
         end
         protocol = 'https' if self.secure_session && current_user
         protocol = options[:protocol] if options[:protocol]
