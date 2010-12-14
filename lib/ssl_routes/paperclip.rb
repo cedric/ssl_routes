@@ -1,6 +1,6 @@
 # Pollute Thread.current so we can fix S3 urls.
 ActionController::Base.class_eval do
-  after_filter :set_protocol
+  before_filter :set_protocol
   private
     def set_protocol
       Thread.current[:protocol] = request && request.ssl? ? 'https' : 'http'
