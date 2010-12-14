@@ -44,7 +44,7 @@ module SslRoutes::Controller
         )
         current = request.protocol.split(':').first
         target  = extract_protocol(options)
-        if current != target && request.get?
+        if current != target && !request.xhr? && request.get?
           flash.keep
           redirect_to "#{target}://#{request.host_with_port + request.request_uri}"
           return false
