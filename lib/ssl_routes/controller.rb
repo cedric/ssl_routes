@@ -38,6 +38,7 @@ module SslRoutes::Controller
     private
 
       def ensure_protocol
+        # ActionController::Routing::Routes.send :remove_recognize_optimized!
         options = ActionController::Routing::Routes.recognize_path(
           request.path,
           ActionController::Routing::Routes.extract_request_environment(request)
@@ -67,3 +68,4 @@ module SslRoutes::Controller
 end
 
 ActionController::Base.send :include, SslRoutes::Controller
+ActionController::Routing::Routes.send :remove_recognize_optimized!
