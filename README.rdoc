@@ -12,16 +12,6 @@ If using Bundler, add the following to your Gemfile:
 
   gem 'ssl_routes'
 
-=== Example
-
-class ApplicationController < ActionController::Base
-  enforce_protocols do |config|
-    config.parameter = :protocol
-    config.secure_session = true
-    config.enable_ssl = true
-  end
-end
-
 === Configuration
 
 Place enforce_protocols with the configuration block in ApplicationController and define the configuration options.
@@ -37,6 +27,24 @@ This is to defend against session hijacking tools such as Firesheep. When a user
 ==== enable_ssl (default: false)
 
 This is to enable or disable SSL. Useful for turning it on or off based on the environment, a session variable or a user setting.
+
+=== Example
+
+Controller
+
+  class ApplicationController < ActionController::Base
+    enforce_protocols do |config|
+      config.parameter = :ssl
+      config.secure_session = true
+      config.enable_ssl = true
+    end
+  end
+
+Routes
+
+  ActionController::Routing::Routes.draw do |map|
+    map.signup '/signup', :controller => 'users', :action => 'new', :ssl => true
+  end
 
 === License
 
