@@ -25,10 +25,10 @@ module SslRoutes::Controller
       if self.enable_ssl
         case options
           when Hash
-            current = request.protocol.split(':').first
-            target  = extract_protocol(options)
-            if current != target
-              options.merge!({ :protocol => target, :only_path => false })
+            current_protocol = request.protocol.split(':').first
+            target_protocol  = determine_target_protocol(current_protocol, options)
+            if current_protocol != target_protocol
+              options.merge!({ :protocol => target_protocol, :only_path => false })
             end
         end
       end
@@ -43,21 +43,22 @@ module SslRoutes::Controller
           request.path,
           ActionController::Routing::Routes.extract_request_environment(request)
         )
-        current = request.protocol.split(':').first
-        target  = extract_protocol(options)
-        if current != target && !request.xhr? && request.get?
+        current_protocol = request.protocol.split(':').first
+        target_protocol  = determine_target_protocol(current_protocol, options)
+        if current_protocol != target_protocol && !request.xhr? && request.get?
           flash.keep
-          redirect_to "#{target}://#{request.host_with_port + request.request_uri}"
+          redirect_to "#{target_protocol}://#{request.host_with_port + request.request_uri}"
           return false
         end
       end
 
-      def extract_protocol(options)
+      def determine_target_protocol(current_protocol, options)
         protocol = case options[self.parameter]
           when String then options[self.parameter]
           when TrueClass then 'https'
           else 'http'
         end
+        protocol = current_protocol if [:all, :both].include? options[self.parameter]
         protocol = 'https' if self.secure_session && current_user
         protocol = options[:protocol] if options[:protocol]
         return protocol.split(':').first
