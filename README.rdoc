@@ -4,11 +4,11 @@ This gem was created to enforce SSL in a Rails app based on the defined routes. 
 
 === Installation
 
-In Rails 2.3, add the following to your environment.rb:
+For Rails 2.3, add the following to your environment.rb:
 
   config.gem 'ssl_routes'
 
-If using Bundler, add the following to your Gemfile:
+For Rails 3 (or if using Bundler), add the following to your Gemfile:
 
   gem 'ssl_routes'
 
@@ -30,7 +30,7 @@ This is to enable or disable SSL. Useful for turning it on or off based on the e
 
 === Example
 
-Controller
+==== Controller
 
   class ApplicationController < ActionController::Base
     enforce_protocols do |config|
@@ -40,17 +40,23 @@ Controller
     end
   end
 
-Routes
+==== Routes
 
   ActionController::Routing::Routes.draw do |map|
     map.signup '/signup', :controller => 'users', :action => 'new', :ssl => true
   end
 
+==== Note
+
+If using Rails 3.1 or the Rack::SSL gem, use the :exclude option to allow both http and https traffic:
+
+  config.middleware.use Rack::SSL, :exclude => proc { |env| env['HTTPS'] != 'on' }
+
 === License
 
 (The MIT License)
 
-Copyright (c) 2010 Cedric Howe
+Copyright (c) 2011 Cedric Howe
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

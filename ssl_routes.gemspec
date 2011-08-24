@@ -15,8 +15,7 @@ spec = Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.files = Dir['lib/**/*.rb']
   s.required_rubygems_version = '> 1.3.6'
-  s.add_dependency('rails', '~> 2.3')
+  s.add_dependency('rails', '> 2.3')
   s.test_files = Dir['test/**/*.rb']
   s.rubyforge_project = 'ssl_routes'
-  s.has_rdoc = true
 end
