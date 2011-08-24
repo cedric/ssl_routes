@@ -40,11 +40,23 @@ This is to enable or disable SSL. Useful for turning it on or off based on the e
     end
   end
 
-==== Routes
+==== Route
 
   ActionController::Routing::Routes.draw do |map|
     map.signup '/signup', :controller => 'users', :action => 'new', :ssl => true
   end
+
+==== View
+
+Any helper that uses url_for will use the current protocol to determine if a full URL is needed:
+
+  signup_path
+  => https://hostname/signup
+
+If the current protocol is correct, then nothing changes:
+
+  signup_path
+  => /signup
 
 ==== Note
 
