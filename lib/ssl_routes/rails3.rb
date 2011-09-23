@@ -39,7 +39,7 @@ module SslRoutes
 
         def ensure_protocol
           routes = Rails.application.routes
-          options = routes.recognize_path request.path, request.env
+          options = routes.recognize_path request.path, {:method => request.env['REQUEST_METHOD']}
           current, target = determine_protocols(options)
           if current != target && !request.xhr? && request.get?
             flash.keep
