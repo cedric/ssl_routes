@@ -1,4 +1,3 @@
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'rake/testtask'
 require 'lib/ssl_routes/version'
 
