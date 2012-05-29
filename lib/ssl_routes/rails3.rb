@@ -62,7 +62,7 @@ module SslRoutes
     module InstanceMethods
 
       def url_for_with_ssl_support(options)
-        if options[:only_path] == true
+        if options.is_a?(Hash) && options[:only_path] == true
           ac = self.respond_to?(:controller) ? self.controller : self
           if ac.respond_to?(:enable_ssl) && ac.enable_ssl
             case options
