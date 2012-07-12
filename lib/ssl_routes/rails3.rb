@@ -4,7 +4,6 @@ module SslRoutes
 
     def self.included(base)
       base.extend ClassMethods
-      base.send :include, InstanceMethods
     end
 
     module ClassMethods
@@ -20,63 +19,54 @@ module SslRoutes
 
     end
 
-    module InstanceMethods
-
-      def determine_protocols(options)
-        current = self.request.ssl? ? 'https' : 'http'
-        target = case options[self.parameter]
-          when String then options[self.parameter]
-          when TrueClass then 'https'
-          else 'http'
-        end
-        target = current if [:all, :both].include? options[self.parameter]
-        target = 'https' if self.secure_session && current_user
-        target = options[:protocol] if options[:protocol]
-        [ current, target.split(':').first ]
+    def determine_protocols(options)
+      current = self.request.ssl? ? 'https' : 'http'
+      target = case options[self.parameter]
+        when String then options[self.parameter]
+        when TrueClass then 'https'
+        else 'http'
       end
-
-      private
-
-        def ensure_protocol
-          routes = Rails.application.routes
-          options = routes.recognize_path request.path, {:method => request.env['REQUEST_METHOD']}
-          current, target = determine_protocols(options)
-          if current != target && !request.xhr? && request.get?
-            flash.keep
-            redirect_to URI.join("#{target}://#{request.host_with_port}", request.fullpath).to_s
-            return false
-          end
-        end
-
+      target = current if [:all, :both].include? options[self.parameter]
+      target = 'https' if self.secure_session && current_user
+      target = options[:protocol] if options[:protocol]
+      [ current, target.split(':').first ]
     end
+
+    private
+
+      def ensure_protocol
+        routes = Rails.application.routes
+        options = routes.recognize_path request.path, {:method => request.env['REQUEST_METHOD']}
+        current, target = determine_protocols(options)
+        if current != target && !request.xhr? && request.get?
+          flash.keep
+          redirect_to URI.join("#{target}://#{request.host_with_port}", request.fullpath).to_s
+          return false
+        end
+      end
 
   end
 
   module ActionDispatch
 
     def self.included(base)
-      base.send :include, InstanceMethods
       base.send :alias_method_chain, :url_for, :ssl_support
     end
 
-    module InstanceMethods
-
-      def url_for_with_ssl_support(options)
-        if options.is_a?(Hash) && options[:only_path] == true
-          ac = self.respond_to?(:controller) ? self.controller : self
-          if ac.respond_to?(:enable_ssl) && ac.enable_ssl
-            case options
-              when Hash
-                current, target = ac.determine_protocols(options)
-                if current != target
-                  options.merge!({ :protocol => target, :only_path => false })
-                end
-            end
+    def url_for_with_ssl_support(options)
+      if options.is_a?(Hash) && options[:only_path] == true
+        ac = self.respond_to?(:controller) ? self.controller : self
+        if ac.respond_to?(:enable_ssl) && ac.enable_ssl
+          case options
+            when Hash
+              current, target = ac.determine_protocols(options)
+              if current != target
+                options.merge!({ :protocol => target, :only_path => false })
+              end
           end
         end
-        url_for_without_ssl_support(options)
       end
-
+      url_for_without_ssl_support(options)
     end
 
   end
