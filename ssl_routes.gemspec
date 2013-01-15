@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+$LOAD_PATH << File.dirname(__FILE__)
 require 'lib/ssl_routes/version'
 
 spec = Gem::Specification.new do |s|
@@ -15,7 +14,7 @@ spec = Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.files = Dir['lib/**/*.rb']
   s.required_rubygems_version = '>= 1.3.6'
-  s.add_dependency('rails', '>= 2.3')
+  s.add_dependency('rails', '>= 3.0')
   s.test_files = Dir['test/**/*.rb']
   s.rubyforge_project = 'ssl_routes'
 end

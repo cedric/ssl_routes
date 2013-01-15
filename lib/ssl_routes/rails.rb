@@ -11,7 +11,7 @@ module SslRoutes
       def enforce_protocols(&block)
         cattr_accessor :parameter, :secure_session, :enable_ssl
         self.parameter      = :protocol
-        self.secure_session = false
+        self.secure_session = true
         self.enable_ssl     = false
         yield self if block_given?
         before_filter :ensure_protocol if self.enable_ssl
@@ -21,10 +21,11 @@ module SslRoutes
 
     def determine_protocols(options)
       current = self.request.ssl? ? 'https' : 'http'
-      target = case options[self.parameter]
+      target  = case options[self.parameter]
         when String then options[self.parameter]
         when TrueClass then 'https'
-        else 'http'
+        when FalseClass then 'http'
+        else 'http' # maybe this should be current
       end
       target = current if [:all, :both].include? options[self.parameter]
       target = 'https' if self.secure_session && current_user

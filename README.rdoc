@@ -1,14 +1,15 @@
 == SSL Routes
 
-This gem was created to enforce SSL in a Rails app based on the defined routes. Unlike ssl_requirement, controllers will use the routes to determine enforcement. In order to prevent redirects between protocols where possible, the routes will also be used to generate URLs -- such as those created by url_for and Paperclip. This means that there will be little need to redirect the user, which is a security issue when sensitive data has already been sent. Finally, in response to session hijacking tools such as Firesheep, you can place all logged-in traffic under SSL. This is a work in progress, so please feel free to contribute improvements and bug fixes.
+This gem was created to enforce SSL in a Rails app based on the defined routes. Unlike ssl_requirement, controllers will use the routes to determine enforcement. In order to prevent redirects between protocols where possible, the routes will also be used to generate URLs -- such as those created by url_for and Paperclip. This means that there will be little need to redirect the user, which is a security issue when sensitive data has already been sent. Finally, in response to session hijacking tools such as Firesheep, you can place all logged-in traffic under SSL. Please feel free to contribute improvements and bug fixes.
+
+== Note
+
+* Rails 2.3 support was removed in version 0.2.0.
+* The secure_session setting now defaults to true.
 
 === Installation
 
-For Rails 2.3, add the following to your environment.rb:
-
-  config.gem 'ssl_routes'
-
-For Rails 3 (or if using Bundler), add the following to your Gemfile:
+Add the following to your Gemfile:
 
   gem 'ssl_routes'
 
@@ -20,7 +21,7 @@ Place enforce_protocols with the configuration block in ApplicationController an
 
 This is the parameter in your routes file that pertains to the protocol. The default is to use the standard :protocol, but you can use a custom one if you want.
 
-==== secure_session (default: false)
+==== secure_session (default: true)
 
 This is to defend against session hijacking tools such as Firesheep. When a user is logged-in (requires current_user) all traffic will go under SSL. In order for this to work, routes must exist for both protocols. This means using a custom parameter (such as :ssl => true/false) that can drive your protocol preference but leave both routes intact.
 
@@ -68,7 +69,7 @@ If using Rails 3.1 or the Rack::SSL gem, use the :exclude option to allow both h
 
 (The MIT License)
 
-Copyright (c) 2011 Cedric Howe
+Copyright (c) 2011-2012 Cedric Howe
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
