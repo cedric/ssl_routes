@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+$LOAD_PATH << File.dirname(__FILE__)
 require 'rake/testtask'
 require 'lib/ssl_routes/version'
 
