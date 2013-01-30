@@ -1,5 +1,4 @@
-$: << File.join(File.dirname(__FILE__), '..', 'lib')
-$: << File.join(File.dirname(__FILE__))
+$LOAD_PATH << File.dirname(__FILE__)
 
 require 'rubygems'
 require 'test/unit'
@@ -11,4 +10,3 @@ require 'test/unit'
 # require 'action_view'
 # require 'active_record'
 # require 'ruby-debug'
-require 'spamtrap'
