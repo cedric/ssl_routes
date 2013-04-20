@@ -45,7 +45,8 @@ module SslRoutes
         current, target = determine_protocols(options)
         if current != target && !request.xhr? && request.get?
           flash.keep
-          redirect_to "#{target}://#{request.host}:#{determine_port(target)}#{request.fullpath}"
+          host_with_port = [request.host, determine_port(target)].compact.join(':')
+          redirect_to "#{target}://#{host_with_port}#{request.fullpath}"
           return false
         end
       end
