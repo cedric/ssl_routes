@@ -1,0 +1,3 @@
+class NonSecuredPagesController < ApplicationController
+end
+
