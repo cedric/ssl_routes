@@ -1,3 +1,4 @@
 Dummy::Application.routes.draw do
-  match '/pages(/:action)', to: 'pages', action: :action, as: :page, ssl: true
+  resources :secured_pages, ssl: true
+  resources :non_secured_pages, ssl: false
 end

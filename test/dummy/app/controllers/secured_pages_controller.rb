@@ -1,0 +1,3 @@
+class SecuredPagesController < ApplicationController
+end
+
