@@ -20,7 +20,7 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'ssl_routes'
+gem 'ssl_routes', path: '../..'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
