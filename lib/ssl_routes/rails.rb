@@ -9,7 +9,7 @@ module SslRoutes
     module ClassMethods
 
       def enforce_protocols(&block)
-        cattr_accessor :parameter, :secure_session, :enable_ssl
+        cattr_accessor :parameter, :secure_session, :enable_ssl, :http_port, :https_port
         self.parameter      = :protocol
         self.secure_session = true
         self.enable_ssl     = false
@@ -33,6 +33,10 @@ module SslRoutes
       [ current, target.split(':').first ]
     end
 
+    def determine_port(target_protocol)
+      target_protocol == 'http' ? self.http_port : self.https_port
+    end
+
     private
 
       def ensure_protocol
@@ -41,7 +45,7 @@ module SslRoutes
         current, target = determine_protocols(options)
         if current != target && !request.xhr? && request.get?
           flash.keep
-          redirect_to "#{target}://#{request.host_with_port + request.fullpath}"
+          redirect_to "#{target}://#{request.host}:#{determine_port(target)}#{request.fullpath}"
           return false
         end
       end
@@ -62,7 +66,7 @@ module SslRoutes
             when Hash
               current, target = ac.determine_protocols(options)
               if current != target
-                options.merge!({ :protocol => target, :only_path => false })
+                options.merge!({ :protocol => target, :only_path => false, :port => ac.determine_port(target) })
               end
           end
         end
