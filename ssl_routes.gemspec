@@ -6,6 +6,7 @@ spec = Gem::Specification.new do |s|
   s.name = 'ssl_routes'
   s.version = SslRoutes::VERSION
   s.platform = Gem::Platform::RUBY
+  s.license = 'MIT'
   s.authors = ['Cedric Howe', 'Lance Ivy', 'Tieg Zaharia']
   s.email = 'cedric@howe.net'
   s.homepage = 'http://github.com/cedric/ssl_routes'
@@ -14,7 +15,6 @@ spec = Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.files = Dir['lib/**/*.rb']
   s.required_rubygems_version = '>= 1.3.6'
-  s.add_dependency('rails', '>= 3.0')
+  s.add_dependency('rails', '>= 3.1')
   s.test_files = Dir['test/**/*.rb']
-  s.rubyforge_project = 'ssl_routes'
 end
