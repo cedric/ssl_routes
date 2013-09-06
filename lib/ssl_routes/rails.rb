@@ -36,8 +36,8 @@ module SslRoutes
     private
 
       def ensure_protocol
-        routes = Rails.application.routes
-        options = routes.recognize_path request.path, {:method => request.env['REQUEST_METHOD']}
+        router = Rails.application.routes.router
+        options = recognize_request(router, self.request)
         current, target = determine_protocols(options)
         if current != target && !request.xhr? && request.get?
           flash.keep
@@ -46,6 +46,31 @@ module SslRoutes
         end
       end
 
+      Constraints = ::ActionDispatch::Routing::Mapper::Constraints
+      Dispatcher = ::ActionDispatch::Routing::RouteSet::Dispatcher
+
+      def recognize_request(router, req)
+        router.recognize(req) do |route, matches, params|
+          params.each do |key, value|
+            if value.is_a?(String)
+              value = value.dup.force_encoding(Encoding::BINARY) if value.encoding_aware?
+              params[key] = URI.parser.unescape(value)
+            end
+          end
+
+          dispatcher = route.app
+          while dispatcher.is_a?(Constraints) && dispatcher.matches?(env) do
+            dispatcher = dispatcher.app
+          end
+
+          if dispatcher.is_a?(Dispatcher) && dispatcher.controller(params, false)
+            dispatcher.prepare_params!(params)
+            return params
+          end
+        end
+
+        raise ActionController::RoutingError, "No route matches #{path.inspect}"
+      end
   end
 
   module ActionDispatch
