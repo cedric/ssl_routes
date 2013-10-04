@@ -41,6 +41,8 @@ module SslRoutes
         current, target = determine_protocols(options)
         if (current != target && !request.xhr? && request.get?)
           flash.keep
+          response.headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
+          response.headers['Pragma'] = 'no-cache'
           redirect_to "#{target}://#{request.host_with_port + request.fullpath}"
           return false
         end
@@ -55,9 +57,9 @@ module SslRoutes
     end
 
     def url_for_with_ssl_support(options)
-      if options.is_a?(Hash)
-        ac = self.respond_to?(:controller) ? self.controller : self
-        if ac.respond_to?(:enable_ssl) && ac.enable_ssl
+      ac = self.respond_to?(:controller) ? self.controller : self
+      if ac.respond_to?(:enable_ssl) && ac.enable_ssl
+        if options.is_a?(Hash)
           case options
             when Hash
               current, target = ac.determine_protocols(options)
