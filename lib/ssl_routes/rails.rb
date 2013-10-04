@@ -58,7 +58,6 @@ module SslRoutes
 
     def url_for_with_ssl_support(options)
       ac = self.respond_to?(:controller) ? self.controller : self
-
       if ac.respond_to?(:enable_ssl) && ac.enable_ssl
         if options.is_a?(Hash)
           current, target = ac.determine_protocols(options)
@@ -67,7 +66,6 @@ module SslRoutes
           end
         end
       end
-
       url_for_without_ssl_support(options)
     end
 
