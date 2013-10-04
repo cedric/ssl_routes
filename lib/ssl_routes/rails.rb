@@ -39,11 +39,8 @@ module SslRoutes
         routes = Rails.application.routes
         options = routes.recognize_path request.path, {:method => request.env['REQUEST_METHOD']}
         current, target = determine_protocols(options)
-        safari_preloading = !!request.xhr? && request.accepts.all? { |a| a.symbol != :json }
-        if (current != target && safari_preloading && request.get?) || (current != target && !request.xhr? && request.get?)
+        if (current != target && !request.xhr? && request.get?)
           flash.keep
-          response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-          response.headers["Pragma"] = "no-cache"
           redirect_to "#{target}://#{request.host_with_port + request.fullpath}"
           return false
         end
@@ -58,8 +55,8 @@ module SslRoutes
     end
 
     def url_for_with_ssl_support(options)
-      ac = self.respond_to?(:controller) ? self.controller : self
-      if options.is_a?(Hash) && options[:only_path] == true
+      if options.is_a?(Hash)
+        ac = self.respond_to?(:controller) ? self.controller : self
         if ac.respond_to?(:enable_ssl) && ac.enable_ssl
           case options
             when Hash
@@ -69,12 +66,7 @@ module SslRoutes
               end
           end
         end
-      else
-        if options[:ssl] && ac.respond_to?(:enable_ssl) && ac.enable_ssl
-          options.merge!({ :protocol => 'https' })
-        end
       end
-
       url_for_without_ssl_support(options)
     end
 
