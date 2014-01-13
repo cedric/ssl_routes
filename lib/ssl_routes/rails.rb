@@ -25,9 +25,8 @@ module SslRoutes
         when String then options[self.parameter]
         when TrueClass then 'https'
         when FalseClass then 'http'
-        else 'http' # maybe this should be current
+        else current
       end
-      target = current if [:all, :both].include? options[self.parameter]
       target = 'https' if self.secure_session && current_user
       target = options[:protocol] if options[:protocol]
       [ current, target.split(':').first ]
