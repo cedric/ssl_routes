@@ -4,6 +4,8 @@
 
 == SSL Routes
 
+*NOTE:* This gem is no longer being maintained.
+
 This gem was created to enforce SSL in a Rails app based on the defined routes. Unlike ssl_requirement, controllers will use the routes to determine enforcement. In order to prevent redirects between protocols where possible, the routes will also be used to generate URLs -- such as those created by url_for and Paperclip. This means that there will be little need to redirect the user, which is a security issue when sensitive data has already been sent. Finally, in response to session hijacking tools such as Firesheep, you can place all logged-in traffic under SSL. Please feel free to contribute improvements and bug fixes.
 
 === Warning
