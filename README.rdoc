@@ -1,6 +1,7 @@
 {<img src="https://badge.fury.io/rb/ssl_routes.png" alt="Gem Version" />}[http://badge.fury.io/rb/ssl_routes]
 {<img src="https://secure.travis-ci.org/cedric/ssl_routes.png?branch=master" alt="Build Status" />}[https://travis-ci.org/cedric/ssl_routes]
 {<img src="https://codeclimate.com/github/cedric/ssl_routes.png" />}[https://codeclimate.com/github/cedric/ssl_routes]
+{<img src="https://gemnasium.com/cedric/ssl_routes.svg" alt="Dependency Status" />}[https://gemnasium.com/cedric/ssl_routes]
 
 == SSL Routes
 
